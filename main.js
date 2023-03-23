@@ -130,7 +130,10 @@ module.exports = function (inputConfig) {
 		// Make the requests now
 		const relativeRateLimit = Math.min(Math.min(rateLimit, this.config.concurrency), this.inputs.length);
 		const requestPromises = [];
-		if (0 < relativeRateLimit) console.log(colors.green("\nThe requests:\n"));
+		if (0 < relativeRateLimit) {
+			console.clear();
+			console.log(colors.green("\nThe requests:\n"));
+		}
 		for (let a = 0; a < relativeRateLimit; a++) {
 			const stringInput = this.inputs[a];
 			console.log(stringInput.message + "\n");
