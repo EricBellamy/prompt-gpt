@@ -51,12 +51,22 @@ async function request(model, prompt, headers, timeoutValue, config) {
 
 async function timedRequest(promptThis, stringInput, arrayIndex, timeoutValue = 5000) {
 	return request(promptThis.config.model, stringInput.message, promptThis.headers, timeoutValue, promptThis.config.config).then(value => {
-		return {
-			text: stringInput.message,
-			status: value.status,
-			message: value.data.choices[0].message,
-			tokens: value.data.usage.total_tokens,
-			arrayIndex,
+		if (value.status === 200) {
+			return {
+				text: stringInput.message,
+				status: value.status,
+				message: value.data.choices[0].message,
+				tokens: value.data.usage.total_tokens,
+				arrayIndex,
+			}
+		} else {
+			let responseObject = {
+				text: stringInput.message,
+				status: value.status,
+				arrayIndex
+			}
+			if (value.data && value.data.error) responseObject.error = value.data.error;
+			return responseObject;
 		}
 	}).catch((err) => {
 		if (err === undefined) {
@@ -133,7 +143,7 @@ module.exports = function (inputConfig) {
 
 			// Prompt the user for each successful value
 			for (const value of values) {
-				if(value === undefined) continue;
+				if (value === undefined) continue;
 				if (value.tokens) this.total_tokens += value.tokens;
 
 				// If the request was successful, remove the string from the array
@@ -174,10 +184,15 @@ module.exports = function (inputConfig) {
 			}
 			// Print out the problematic values
 			for (const value of problemValues) {
-				if (value.status === 408) console.log(colors.red("Timed out for request"), colors.magenta(`'${value.text}'`));
-				else {
-					console.log("THE UNHANDLED VALUE: ");
-					console.log(value);
+				switch (value.status) {
+					case 408:
+						console.log(colors.red("Timed out for request"), colors.magenta(`'${value.text}'`));
+						break;
+					default:
+						if (value.error) throw new Error(value.error.message);
+						console.log("THE UNHANDLED VALUE: ");
+						console.log(value);
+						break;
 				}
 			}
 			console.log();
