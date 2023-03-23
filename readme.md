@@ -33,6 +33,33 @@ await prompt.evaluate();
 Prompts are generated ahead of time with the evaluate call halting the program while they are processed.
 
 
+
+&nbsp;
+
+
+```javascript
+for(let i = 0; i < 120; i++){
+	prompt({
+		message: `Return a javascript array of ${i + 3} animal names`,
+		pass: function(response){
+			console.log(response);
+		},
+		parse: function(response){
+			const firstBracket = response.indexOf("[");
+			if(firstBracket != -1){
+				const lastBracket = response.indexOf("]");
+				let insideBrackets = response.substring(firstBracket + 1, lastBracket);
+				if(insideBrackets.slice(-1) === ",") insideBrackets = insideBrackets.slice(0, -1);
+				return JSON.parse("[" + insideBrackets + "]");
+			}
+		}
+	});
+}
+await prompt.evaluate();
+```
+A parse function can be specified which will display on screen the parsed value from the response and forward that value into your pass function. This allows you to extract arrays and objects and make sure that they're properly formatted before accepting the response.
+
+
 &nbsp;
 
 

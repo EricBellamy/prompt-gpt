@@ -157,11 +157,27 @@ module.exports = function (inputConfig) {
 					} else {
 						// Prompt the user with the response
 						console.clear();
-						console.log(colors.cyan(`(${this.total_tokens} consumed)\n`));
-						console.log(colors.green("The prompt:\n"));
-						console.log(value.text);
-						console.log(colors.yellow("\n\n\nThe model return:"));
-						console.log(value.message.content);
+
+						console.log(colors.cyan(`(${this.total_tokens} consumed)`));
+						if (targetInput.parse) {
+							value.parsed = targetInput.parse(value.message.content);
+							console.log(colors.red("\nThe parsed model return:\n"));
+							console.log(value.parsed);
+
+							console.log(colors.green("\n\n\nThe prompt:\n"));
+							console.log(value.text);
+
+							console.log(colors.yellow("\n\n\nThe model return:\n"));
+							console.log(value.message.content);
+						} else {
+							console.log(colors.yellow("\nThe model return:\n"));
+							console.log(value.message.content);
+
+							console.log(colors.green("\n\n\nThe prompt:\n"));
+							console.log(value.text);
+						}
+
+
 						console.log(colors.red("\n\n\nAccept?"));
 						const userInput = prompt('\n(enter=yes, anything=no):');
 
