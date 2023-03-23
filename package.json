@@ -1,0 +1,30 @@
+{
+	"name": "prompt-gpt",
+	"version": "1.0.0",
+	"description": "Wrapper for ChatGPT & GPT 4 that handles rate limiting, concurrency, timeouts and response validation.",
+	"license": "MIT",
+	"repository": "ericbellamy/prompt-gpt",
+	"main": "main.js",
+	"keywords": [
+		"tiny",
+		"npm",
+		"package",
+		"openai",
+		"gpt",
+		"chatgpt",
+		"gpt-3.5-turbo",
+		"gpt-4",
+		"chat/completions",
+		"v1/chat/completions",
+		"prompt",
+		"concurrency",
+		"rate limit",
+		"timeout",
+		"validation"
+	],
+	"dependencies": {
+		"colors": "^1.4.0",
+		"https": "^1.0.0",
+		"prompt-sync": "^4.2.0"
+	}
+}
