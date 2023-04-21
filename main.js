@@ -157,6 +157,7 @@ module.exports = function (inputConfig) {
 					let wasResponseValid;
 					if (targetInput.validate) {
 						wasResponseValid = targetInput.validate(value.message.content);
+						if(wasResponseValid) value.parsed = targetInput.parse(value.message.content);
 					} else {
 						// Prompt the user with the response
 						console.clear();

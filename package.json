@@ -1,6 +1,6 @@
 {
 	"name": "prompt-gpt",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"description": "Wrapper for ChatGPT & GPT 4 that handles rate limiting, concurrency, timeouts and response validation.",
 	"license": "MIT",
 	"repository": "ericbellamy/prompt-gpt",
