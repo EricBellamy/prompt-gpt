@@ -35,7 +35,16 @@ async function request(model, prompt, headers, timeoutValue, config) {
 			timeout: timeoutValue
 		};
 
-		const req = https.request(options, (res) => res.on('data', (d) => resolve({ status: res.statusCode, data: JSON.parse(d) })));
+		const req = https.request(options, (res) => {
+			let body = '';
+			res.on('data', function (chunk) {
+				body = body + chunk;
+			});
+
+			res.on('end', function () {
+				resolve({ status: res.statusCode, data: JSON.parse(body) });
+			});
+		});
 
 		req.on('error', (error) => reject(error));
 
@@ -131,12 +140,12 @@ module.exports = function (inputConfig) {
 		const relativeRateLimit = Math.min(Math.min(rateLimit, this.config.concurrency), this.inputs.length);
 		const requestPromises = [];
 		if (0 < relativeRateLimit) {
-			console.clear();
-			console.log(colors.green("\nThe requests:\n"));
+			// console.clear();
+			console.log(colors.green(`\nMaking ${relativeRateLimit} requests...\n`));
 		}
 		for (let a = 0; a < relativeRateLimit; a++) {
 			const stringInput = this.inputs[a];
-			console.log(stringInput.message + "\n");
+			// console.log(stringInput.message + "\n");
 
 			requestPromises.push(timedRequest(this, stringInput, a, this.config.timeout));
 		}
@@ -157,7 +166,7 @@ module.exports = function (inputConfig) {
 					let wasResponseValid;
 					if (targetInput.validate) {
 						wasResponseValid = targetInput.validate(value.message.content);
-						if(wasResponseValid) value.parsed = targetInput.parse(value.message.content);
+						if (wasResponseValid) value.parsed = targetInput.parse(value.message.content);
 					} else {
 						// Prompt the user with the response
 						console.clear();
